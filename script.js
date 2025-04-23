@@ -1,146 +1,98 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  background: url('bakgrunn.jpg') no-repeat center center fixed;
-  background-size: cover;
-  color: #333;
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-MFn5hb-J1M5kRB0h8denu5iHYTYma-z6uHUqcIOYMT9dHLLJ7wQ-yBQpPLGKws0nehC0_6p7RaOb/pub?gid=0&single=true&output=csv';
+  const jobList = document.getElementById('job-list');
+  const pwaUrl = 'https://DINEGITHUBURL.github.io/REPO'; // ← Bytt ut med din faktiske URL
 
-header {
-  background-color: rgba(0, 43, 69, 0.85);
-  color: white;
-  text-align: center;
-  padding: 2rem 1rem;
-}
+  Papa.parse(csvUrl, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      const data = results.data;
 
-main {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: auto;
-}
+      data.forEach(job => {
+        if (!job['Stillingstittel']) return;
 
-.job-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
-}
+        const title = job['Stillingstittel'];
+        const org = job['Organisasjon'] || '-';
+        const location = job['Lokasjon'] || '-';
+        const deadline = job['Søknadsfrist'] || '-';
+        const link = job['link'];
+        const contact = job['Kontakperson'];
+        const phone = (job['Tlf kontaktperson'] || '').replace(/\s+/g, '');
 
-.job-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 1.5rem;
-  max-width: 440px;
-  width: 100%;
-  flex: 1 1 360px;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+        const card = document.createElement('div');
+        card.className = 'job-card';
 
-.job-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-}
+        card.innerHTML = `
+          <h2>${title}</h2>
+          <p><strong>Organisasjon:</strong> ${org}</p>
+          <p><strong>Lokasjon:</strong> ${location}</p>
+          <p><strong>Søknadsfrist:</strong> ${deadline}</p>
+          <div class="button-row">
+            <div class="top-buttons">
+              <a href="${link}" target="_blank" class="btn">Les mer</a>
+              <button class="btn secondary-btn share-btn" data-title="${title}">Del med en venn</button>
+            </div>
+            <button class="btn book-btn" data-title="${title}" data-phone="${phone}" data-name="${contact}">
+              Book omvendt intervju
+            </button>
+          </div>
+        `;
 
-.job-card h2 {
-  margin: 0 0 0.5rem;
-  font-size: 1.2rem;
-  color: #004085;
-}
+        jobList.appendChild(card);
+      });
 
-.job-card p {
-  margin: 0.25rem 0;
-}
+      // 📩 Book omvendt intervju (SMS)
+      document.querySelectorAll('.book-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const title = btn.dataset.title;
+          const phone = btn.dataset.phone;
+          const name = btn.dataset.name;
+          const message = `Hei ${name}, jeg ønsker å booke et omvendt intervju for stillingen "${title}". Her er noen forslag:\n- [Tidspunkt 1]\n- [Tidspunkt 2]\n- [Tidspunkt 3]\n\nHilsen [Ditt navn]`;
+          const smsLink = `sms:${phone}?&body=${encodeURIComponent(message)}`;
+          window.location.href = smsLink;
+        });
+      });
 
-.button-row {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
+      // 🤝 Del med en venn
+      document.querySelectorAll('.share-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const title = btn.dataset.title;
+          const message = `Hei! Jeg tror denne stillingen kunne passe for deg:\n\n${title}\n${pwaUrl}`;
 
-.top-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
+          const popup = document.createElement('div');
+          popup.className = 'share-popup';
+          popup.innerHTML = `
+            <div class="popup-inner">
+              <p>Del via:</p>
+              <button class="btn" id="share-sms">📩 SMS</button>
+              <button class="btn" id="share-messenger">💬 Messenger</button>
+              <button class="btn secondary-btn" id="cancel-share">Avbryt</button>
+            </div>
+          `;
+          document.body.appendChild(popup);
 
-.top-buttons .btn {
-  flex: 1;
-}
+          document.getElementById('share-sms').addEventListener('click', () => {
+            window.location.href = `sms:?&body=${encodeURIComponent(message)}`;
+            popup.remove();
+          });
 
-.btn {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 999px;
-  font-size: 1rem;
-  font-weight: 600;
-  background-color: #004085;
-  color: white;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background-color 0.2s;
-  text-align: center;
-}
+          document.getElementById('share-messenger').addEventListener('click', () => {
+            const messengerUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pwaUrl)}&quote=${encodeURIComponent(title)}`;
+            window.open(messengerUrl, '_blank');
+            popup.remove();
+          });
 
-.btn:hover {
-  background-color: #003366;
-}
-
-.btn.secondary-btn {
-  background-color: #6f42c1;
-}
-
-.btn.secondary-btn:hover {
-  background-color: #5936a2;
-}
-
-footer {
-  text-align: center;
-  padding: 1.5rem;
-  background-color: rgba(255, 255, 255, 0.85);
-  font-size: 0.9rem;
-  color: #333;
-  margin-top: 2rem;
-}
-
-/* Popup for "Del med en venn" */
-.share-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-
-.popup-inner {
-  background: white;
-  padding: 2rem;
-  border-radius: 16px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.popup-inner p {
-  margin-bottom: 1rem;
-  font-weight: bold;
-}
-
-/* Mobiltilpasning */
-@media (max-width: 640px) {
-  .job-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .job-card {
-    max-width: 100%;
-    width: 90%;
-  }
-}
+          document.getElementById('cancel-share').addEventListener('click', () => {
+            popup.remove();
+          });
+        });
+      });
+    },
+    error: function(err) {
+      console.error('Feil ved lasting av CSV:', err);
+      jobList.innerHTML = '<p>Kunne ikke hente stillingsannonser.</p>';
+    }
+  });
+});
