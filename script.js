@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         jobList.appendChild(card);
       });
 
-      // 📩 Book omvendt intervju (SMS)
+      // Book omvendt intervju (SMS)
       document.querySelectorAll('.book-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const title = btn.dataset.title;
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
-      // 🤝 Del med en venn
+      // Del med en venn
       document.querySelectorAll('.share-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const title = btn.dataset.title;
