@@ -1,1 +1,146 @@
-[PASTED FROM EARLIER COMPLETE SCRIPT FILE]
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: url('bakgrunn.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #333;
+}
+
+header {
+  background-color: rgba(0, 43, 69, 0.85);
+  color: white;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+main {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.job-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.job-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  max-width: 440px;
+  width: 100%;
+  flex: 1 1 360px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.job-card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  color: #004085;
+}
+
+.job-card p {
+  margin: 0.25rem 0;
+}
+
+.button-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.top-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.top-buttons .btn {
+  flex: 1;
+}
+
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: #004085;
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  text-align: center;
+}
+
+.btn:hover {
+  background-color: #003366;
+}
+
+.btn.secondary-btn {
+  background-color: #6f42c1;
+}
+
+.btn.secondary-btn:hover {
+  background-color: #5936a2;
+}
+
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  color: #333;
+  margin-top: 2rem;
+}
+
+/* Popup for "Del med en venn" */
+.share-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.popup-inner {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.popup-inner p {
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+/* Mobiltilpasning */
+@media (max-width: 640px) {
+  .job-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .job-card {
+    max-width: 100%;
+    width: 90%;
+  }
+}
