@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-MFn5hb-J1M5kRB0h8denu5iHYTYma-z6uHUqcIOYMT9dHLLJ7wQ-yBQpPLGKws0nehC0_6p7RaOb/pub?gid=0&single=true&output=csv';
   const jobList = document.getElementById('job-list');
-  const pwaUrl = 'https://DINEGITHUBURL.github.io/REPO'; // ← Husk å bytte
+  const pwaUrl = 'https://DINEGITHUBURL.github.io/REPO'; // ← Husk å bytte denne til din GitHub Pages URL
 
   Papa.parse(csvUrl, {
     download: true,
@@ -22,11 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = document.createElement('div');
         card.className = 'job-card';
 
-        // --- NY LOGIKK: Beregn dager til frist
+        // --- NY LOGIKK for å regne dager til frist
         let deadlineText = '';
         if (deadline) {
           const today = new Date();
-          const deadlineDate = new Date(deadline);
+          const parts = deadline.split(/[-/]/);
+          const deadlineDate = new Date(parts[0], parts[1] - 1, parts[2]);
           const timeDiff = deadlineDate - today;
           const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             deadlineText = '<p class="warning-text">Søknadsfristen utløper i dag!</p>';
           } else if (daysLeft > 0 && daysLeft <= 7) {
             card.classList.add('urgent-soon');
-            deadlineText = '<p class="warning-text">Kort tid igjen til søknadsfrist</p>';
+            deadlineText = `<p class="warning-text">Kort tid igjen – ${daysLeft} dager til frist</p>`;
           }
         }
 
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         jobList.appendChild(card);
       });
 
-      // 📩 Book omvendt intervju
+      // 📩 Book omvendt intervju (SMS)
       document.querySelectorAll('.book-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const title = btn.dataset.title;
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
-      // 🤝 Del med en venn
+      // 🤝 Del med en venn (Popup)
       document.querySelectorAll('.share-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const title = btn.dataset.title;
@@ -107,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
     error: function(err) {
-      console.error('❌ Feil ved CSV:', err);
+      console.error('❌ Feil ved CSV-parsing:', err);
       jobList.innerHTML = '<p>Kunne ikke hente stillingsannonser.</p>';
     }
   });
