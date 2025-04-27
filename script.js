@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-MFn5hb-J1M5kRB0h8denu5iHYTYma-z6uHUqcIOYMT9dHLLJ7wQ-yBQpPLGKws0nehC0_6p7RaOb/pub?gid=0&single=true&output=csv';
   const jobList = document.getElementById('job-list');
-  const pwaUrl = 'https://DINEGITHUBURL.github.io/REPO'; // ← Husk å bytte denne til din GitHub Pages URL
+  const pwaUrl = 'https://DINEGITHUBURL.github.io/REPO'; // ← Bytt ut til din GitHub Pages URL
 
   Papa.parse(csvUrl, {
     download: true,
@@ -22,13 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = document.createElement('div');
         card.className = 'job-card';
 
-        // --- NY LOGIKK for å regne dager til frist
+        // --- Ny og trygg dato-sjekk
         let deadlineText = '';
         if (deadline) {
           const today = new Date();
+          today.setHours(0, 0, 0, 0); // Nullstille klokkeslett
+
           const parts = deadline.split(/[-/]/);
           const deadlineDate = new Date(parts[0], parts[1] - 1, parts[2]);
-          const timeDiff = deadlineDate - today;
+          deadlineDate.setHours(0, 0, 0, 0); // Nullstille klokkeslett
+
+          const timeDiff = deadlineDate.getTime() - today.getTime();
           const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
           if (daysLeft === 0) {
@@ -72,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
 
-      // 🤝 Del med en venn (Popup)
+      // 🤝 Del med en venn (popup)
       document.querySelectorAll('.share-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const title = btn.dataset.title;
