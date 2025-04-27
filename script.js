@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-MFn5hb-J1M5kRB0h8denu5iHYTYma-z6uHUqcIOYMT9dHLLJ7wQ-yBQpPLGKws0nehC0_6p7RaOb/pub?gid=0&single=true&output=csv';
   const jobList = document.getElementById('job-list');
-  const pwaUrl = 'https://DINEGITHUBURL.github.io/REPO'; // ← BYTT UT med din faktiske GitHub Pages-url
+  const pwaUrl = 'https://DINEGITHUBURL.github.io/REPO'; // ← Husk å bytte
 
   Papa.parse(csvUrl, {
     download: true,
@@ -22,11 +22,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = document.createElement('div');
         card.className = 'job-card';
 
+        // --- NY LOGIKK: Beregn dager til frist
+        let deadlineText = '';
+        if (deadline) {
+          const today = new Date();
+          const deadlineDate = new Date(deadline);
+          const timeDiff = deadlineDate - today;
+          const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+          if (daysLeft === 0) {
+            card.classList.add('urgent-today');
+            deadlineText = '<p class="warning-text">Søknadsfristen utløper i dag!</p>';
+          } else if (daysLeft > 0 && daysLeft <= 7) {
+            card.classList.add('urgent-soon');
+            deadlineText = '<p class="warning-text">Kort tid igjen til søknadsfrist</p>';
+          }
+        }
+
         card.innerHTML = `
           <h2>${title}</h2>
           <p><strong>Organisasjon:</strong> ${org}</p>
           <p><strong>Lokasjon:</strong> ${location}</p>
           <p><strong>Søknadsfrist:</strong> ${deadline}</p>
+          ${deadlineText}
           <div class="button-row">
             <div class="top-buttons">
               <a href="${link}" target="_blank" class="btn">Les mer</a>
@@ -41,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         jobList.appendChild(card);
       });
 
-      // 📩 Book omvendt intervju (SMS)
+      // 📩 Book omvendt intervju
       document.querySelectorAll('.book-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const title = btn.dataset.title;
@@ -89,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
     error: function(err) {
-      console.error('❌ Feil ved lasting av CSV:', err);
+      console.error('❌ Feil ved CSV:', err);
       jobList.innerHTML = '<p>Kunne ikke hente stillingsannonser.</p>';
     }
   });
