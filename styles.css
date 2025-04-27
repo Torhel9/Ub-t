@@ -144,3 +144,18 @@ footer {
     width: 90%;
   }
 }
+/* Gult for frister */
+.urgent-soon {
+  background-color: #fff8dc; /* Lys gul */
+}
+
+.urgent-today {
+  background-color: #ffe066; /* Kraftigere gul */
+}
+
+/* Ekstra stil på advarsels-tekst */
+.warning-text {
+  margin-top: 0.5rem;
+  font-weight: bold;
+  color: #cc3300;
+}
