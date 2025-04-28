@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-MFn5hb-J1M5kRB0h8denu5iHYTYma-z6uHUqcIOYMT9dHLLJ7wQ-yBQpPLGKws0nehC0_6p7RaOb/pub?gid=0&single=true&output=csv';
   const jobList = document.getElementById('job-list');
-  const pwaUrl = 'https://DINEGITHUBURL.github.io/REPO'; // ← Bytt ut til din GitHub Pages URL
+  const pwaUrl = 'https://torhel9.github.io/Ub-t/:// ← Bytt ut til din GitHub Pages URL
 
   Papa.parse(csvUrl, {
     download: true,
