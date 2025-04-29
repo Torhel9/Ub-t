@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-MFn5hb-J1M5kRB0h8denu5iHYTYma-z6uHUqcIOYMT9dHLLJ7wQ-yBQpPLGKws0nehC0_6p7RaOb/pub?gid=0&single=true&output=csv';
   const jobList = document.getElementById('job-list');
-  const pwaUrl = 'https://torhel9.github.io/Ub-t/:// ← Bytt ut til din GitHub Pages URL
+  const pwaUrl = 'https://torhel9.github.io/Ub-t/'; // ← Din GitHub Pages URL
 
   Papa.parse(csvUrl, {
     download: true,
@@ -22,15 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = document.createElement('div');
         card.className = 'job-card';
 
-        // --- Ny og trygg dato-sjekk
+        // --- Vanntett datohåndtering
         let deadlineText = '';
         if (deadline) {
           const today = new Date();
-          today.setHours(0, 0, 0, 0); // Nullstille klokkeslett
+          today.setHours(0, 0, 0, 0);
 
           const parts = deadline.split(/[-/]/);
-          const deadlineDate = new Date(parts[0], parts[1] - 1, parts[2]);
-          deadlineDate.setHours(0, 0, 0, 0); // Nullstille klokkeslett
+          const deadlineDate = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+          deadlineDate.setHours(0, 0, 0, 0);
 
           const timeDiff = deadlineDate.getTime() - today.getTime();
           const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
